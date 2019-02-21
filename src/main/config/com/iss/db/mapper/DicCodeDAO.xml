@@ -1,0 +1,119 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.iss.db.dao.DicCodeDAO">
+	<resultMap id="BaseResultMap" type="com.iss.db.entity.DicCode">
+		<id column="t_dic_id" jdbcType="VARCHAR" property="dicId" />
+		<result column="t_dic_code" jdbcType="VARCHAR" property="dicCode" />
+		<result column="t_name" jdbcType="VARCHAR" property="name" />
+		<result column="t_type" jdbcType="VARCHAR" property="type" />
+	</resultMap>
+	<sql id="Base_Column_List">
+		t_dic_id, t_dic_code, t_name, t_type
+	</sql>
+	<select id="selectByPrimaryKey" parameterType="java.lang.String"
+		resultMap="BaseResultMap">
+		select
+		<include refid="Base_Column_List" />
+		from t_dic_code
+		where t_dic_id = #{dicId,jdbcType=VARCHAR}
+	</select>
+	<!-- 数据类型的下拉列表值 -->
+	<select id="selectAll" resultMap="BaseResultMap">
+		select DISTINCT t_type
+		from
+		t_dic_code
+	</select>
+	<!-- 分页显示查询数据 -->
+	<select id="selectDicAll" resultMap="BaseResultMap"
+		parameterType="com.iss.db.entity.DicCode">
+		select
+		<include refid="Base_Column_List" />
+		from t_dic_code
+		<where>
+			<if test="codeType !=''">
+				and t_type=#{codeType,jdbcType=VARCHAR}
+			</if>
+			<if test="dicCodeName !=''">
+				and t_name like concat(concat('%',#{dicCodeName}),'%')
+			</if>
+		</where>
+	</select>
+	<!-- 用于显示权限下拉列表值 -->
+	<select id="getDataByType" resultMap="BaseResultMap"
+		parameterType="java.lang.String">
+		select
+		<include refid="Base_Column_List" />
+		from t_dic_code
+		where t_type = #{type,jdbcType=VARCHAR}
+	</select>
+
+	<delete id="deleteByPrimaryKey" parameterType="java.lang.String">
+		delete from
+		t_dic_code
+		where t_dic_id = #{dicId,jdbcType=VARCHAR}
+	</delete>
+	<insert id="insert" parameterType="com.iss.db.entity.DicCode">
+		insert into t_dic_code
+		(t_dic_id, t_dic_code, t_name,
+		t_type)
+		values
+		(#{dicId,jdbcType=VARCHAR}, #{dicCode,jdbcType=VARCHAR},
+		#{name,jdbcType=VARCHAR},
+		#{type,jdbcType=VARCHAR})
+	</insert>
+	<insert id="insertSelective" parameterType="com.iss.db.entity.DicCode">
+		insert into t_dic_code
+		<trim prefix="(" suffix=")" suffixOverrides=",">
+			<if test="dicId != null">
+				t_dic_id,
+			</if>
+			<if test="dicCode != null">
+				t_dic_code,
+			</if>
+			<if test="name != null">
+				t_name,
+			</if>
+			<if test="type != null">
+				t_type,
+			</if>
+		</trim>
+		<trim prefix="values (" suffix=")" suffixOverrides=",">
+			<if test="dicId != null">
+				#{dicId,jdbcType=VARCHAR},
+			</if>
+			<if test="dicCode != null">
+				#{dicCode,jdbcType=VARCHAR},
+			</if>
+			<if test="name != null">
+				#{name,jdbcType=VARCHAR},
+			</if>
+			<if test="type != null">
+				#{type,jdbcType=VARCHAR},
+			</if>
+		</trim>
+	</insert>
+	<update id="updateByPrimaryKeySelective" parameterType="com.iss.db.entity.DicCode">
+		update t_dic_code
+		<set>
+			<if test="dicCode != null">
+				t_dic_code = #{dicCode,jdbcType=VARCHAR},
+			</if>
+			<if test="name != null">
+				t_name = #{name,jdbcType=VARCHAR},
+			</if>
+			<if test="type != null">
+				t_type = #{type,jdbcType=VARCHAR},
+			</if>
+		</set>
+		where t_dic_id = #{dicId,jdbcType=VARCHAR}
+	</update>
+	<update id="updateByPrimaryKey" parameterType="com.iss.db.entity.DicCode">
+		update t_dic_code
+		set t_dic_code = #{dicCode,jdbcType=VARCHAR},
+		t_name =
+		#{name,jdbcType=VARCHAR},
+		t_type = #{type,jdbcType=VARCHAR}
+		where
+		t_dic_id = #{dicId,jdbcType=VARCHAR}
+	</update>
+</mapper>

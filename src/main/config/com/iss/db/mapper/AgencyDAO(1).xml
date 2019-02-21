@@ -1,0 +1,110 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.iss.db.dao.AgencyDAO">
+	<resultMap id="BaseResultMap" type="com.iss.db.entity.Agency">
+		<id column="t_agency_id" jdbcType="VARCHAR" property="agencyId" />
+		<result column="t_license" jdbcType="VARCHAR" property="license" />
+		<result column="t_permit_no" jdbcType="VARCHAR" property="permitNo" />
+		<result column="t_agency_name" jdbcType="VARCHAR" property="agencyName" />
+	</resultMap>
+	<sql id="Base_Column_List">
+		t_agency_id, t_license, t_permit_no, t_agency_name
+	</sql>
+	<select id="selectByPrimaryKey" parameterType="java.lang.String"
+		resultMap="BaseResultMap">
+		select
+		<include refid="Base_Column_List" />
+		from t_agency
+		where t_agency_id = #{agencyId,jdbcType=VARCHAR}
+	</select>
+	<!-- 分页显示查询数据 -->
+	<select id="selectAllAgency" resultMap="BaseResultMap"
+		parameterType="java.lang.String">
+		select
+		<include refid="Base_Column_List" />
+		from t_agency
+		<if test="agencyName !=''">
+			where t_agency_name like
+			concat(concat('%',#{agencyName}),'%')
+		</if>
+	</select>
+	<!-- 设备预警管理页面，用于为供应商下拉列表提供支持 -->
+	<select id="getAllAgency" resultMap="BaseResultMap">
+		select
+		<include refid="Base_Column_List" />
+		from t_agency
+	</select>
+
+
+
+	<delete id="deleteByPrimaryKey" parameterType="java.lang.String">
+		delete from
+		t_agency
+		where t_agency_id = #{agencyId,jdbcType=VARCHAR}
+	</delete>
+	<insert id="insert" parameterType="com.iss.db.entity.Agency">
+		insert into t_agency
+		(t_agency_id, t_license, t_permit_no,
+		t_agency_name)
+		values
+		(#{agencyId,jdbcType=VARCHAR}, #{license,jdbcType=VARCHAR},
+		#{permitNo,jdbcType=VARCHAR},
+		#{agencyName,jdbcType=VARCHAR})
+	</insert>
+	<insert id="insertSelective" parameterType="com.iss.db.entity.Agency">
+		insert into t_agency
+		<trim prefix="(" suffix=")" suffixOverrides=",">
+			<if test="agencyId != null">
+				t_agency_id,
+			</if>
+			<if test="license != null">
+				t_license,
+			</if>
+			<if test="permitNo != null">
+				t_permit_no,
+			</if>
+			<if test="agencyName != null">
+				t_agency_name,
+			</if>
+		</trim>
+		<trim prefix="values (" suffix=")" suffixOverrides=",">
+			<if test="agencyId != null">
+				#{agencyId,jdbcType=VARCHAR},
+			</if>
+			<if test="license != null">
+				#{license,jdbcType=VARCHAR},
+			</if>
+			<if test="permitNo != null">
+				#{permitNo,jdbcType=VARCHAR},
+			</if>
+			<if test="agencyName != null">
+				#{agencyName,jdbcType=VARCHAR},
+			</if>
+		</trim>
+	</insert>
+	<update id="updateByPrimaryKeySelective" parameterType="com.iss.db.entity.Agency">
+		update t_agency
+		<set>
+			<if test="license != null">
+				t_license = #{license,jdbcType=VARCHAR},
+			</if>
+			<if test="permitNo != null">
+				t_permit_no = #{permitNo,jdbcType=VARCHAR},
+			</if>
+			<if test="agencyName != null">
+				t_agency_name = #{agencyName,jdbcType=VARCHAR},
+			</if>
+		</set>
+		where t_agency_id = #{agencyId,jdbcType=VARCHAR}
+	</update>
+	<update id="updateByPrimaryKey" parameterType="com.iss.db.entity.Agency">
+		update t_agency
+		set t_license = #{license,jdbcType=VARCHAR},
+		t_permit_no =
+		#{permitNo,jdbcType=VARCHAR},
+		t_agency_name =
+		#{agencyName,jdbcType=VARCHAR}
+		where t_agency_id =
+		#{agencyId,jdbcType=VARCHAR}
+	</update>
+</mapper>

@@ -1,0 +1,35 @@
+@CHARSET "UTF-8";
+
+.devicePic {
+	width: 200px;
+	height: 200px;
+	border: 1px dotted;
+}
+
+.devicePic img {
+	width: 100%;
+	height: 100%;
+}
+
+.detailPicDiv {
+	width: 400px;
+	height: 300px;
+	border: 1px dotted;
+}
+
+.detailPicDiv img {
+	width: 100%;
+	height: 100%;
+}
+
+#mygender  {
+	width: 100px;
+}
+
+#mykeshixiala{
+	width: 100px;
+}
+
+#fileToUpload {
+	display: none;
+}

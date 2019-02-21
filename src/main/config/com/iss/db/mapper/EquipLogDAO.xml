@@ -1,0 +1,139 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.iss.db.dao.EquipLogDAO">
+	<resultMap id="BaseResultMap" type="com.iss.db.entity.EquipLog">
+		<id column="t_log_id" jdbcType="VARCHAR" property="logId" />
+		<result column="t_preson_id" jdbcType="VARCHAR" property="presonId" />
+		<result column="t_equip_id" jdbcType="VARCHAR" property="equipId" />
+		<result column="t_log_addTime" jdbcType="VARCHAR" property="logAddtime" />
+		<result column="t_fix_content" jdbcType="VARCHAR" property="fixContent" />
+	</resultMap>
+	<resultMap id="ResultWithEquipLog" type="com.iss.db.entity.EquipLog">
+		<id column="t_log_id" property="logId" jdbcType="VARCHAR" />
+		<result column="t_cname" property="presonId" jdbcType="VARCHAR" />
+		<result column="t_equip_id" property="equipId" jdbcType="VARCHAR" />
+		<result column="t_device_name" property="equipName" jdbcType="VARCHAR" />
+		<result column="t_log_addTime" property="logAddtime" jdbcType="VARCHAR" />
+		<result column="t_fix_content" property="fixContent" jdbcType="VARCHAR" />
+	</resultMap>
+
+
+
+	<sql id="Base_Column_List">
+		t_log_id, t_preson_id, t_equip_id, t_log_addTime,
+		t_fix_content
+	</sql>
+	<select id="selectByPrimaryKey" parameterType="java.lang.String"
+		resultMap="ResultWithEquipLog">
+		select
+		l.t_log_id,l.t_equip_id,d.t_device_name,p.t_cname,l.t_log_addTime,l.t_fix_content
+		from t_equip_log l left join t_device d
+		on l.t_equip_id=d.t_equip_id
+		left join t_person p on l.t_preson_id=p.t_preson_id
+		where t_log_id =
+		#{tLogId,jdbcType=VARCHAR}
+	</select>
+	<!-- 分页显示查询数据 -->
+	<select id="selectAllEquipLog" resultMap="ResultWithEquipLog"
+		parameterType="com.iss.db.entity.EquipLog">
+		select l.t_log_id,d.t_equip_id,d.t_device_name,p.t_cname as
+		't_cname',l.t_log_addTime,l.t_fix_content
+		from t_equip_log l left join
+		t_device d
+		on l.t_equip_id=d.t_equip_id
+		left join t_person p on
+		l.t_preson_id=p.t_preson_id
+		<where>
+			<if test="equipName !=''">
+				and d.t_device_name like
+				concat(concat('%',#{equipName}),'%')
+			</if>
+			<if test="presonId !=''">
+				and p.t_cname like concat(concat('%',#{presonId}),'%')
+			</if>
+		</where>
+	</select>
+
+
+	<delete id="deleteByPrimaryKey" parameterType="java.lang.String">
+		delete from
+		t_equip_log
+		where t_log_id = #{logId,jdbcType=VARCHAR}
+	</delete>
+	<insert id="insert" parameterType="com.iss.db.entity.EquipLog">
+		insert into t_equip_log
+		(t_log_id, t_preson_id, t_equip_id,
+		t_log_addTime, t_fix_content)
+		values (#{logId,jdbcType=VARCHAR}, #{presonId,jdbcType=VARCHAR},
+		#{equipId,jdbcType=VARCHAR},
+		#{logAddtime,jdbcType=VARCHAR},
+		#{fixContent,jdbcType=VARCHAR})
+	</insert>
+	<insert id="insertSelective" parameterType="com.iss.db.entity.EquipLog">
+		insert into t_equip_log
+		<trim prefix="(" suffix=")" suffixOverrides=",">
+			<if test="logId != null">
+				t_log_id,
+			</if>
+			<if test="presonId != null">
+				t_preson_id,
+			</if>
+			<if test="equipId != null">
+				t_equip_id,
+			</if>
+			<if test="logAddtime != null">
+				t_log_addTime,
+			</if>
+			<if test="fixContent != null">
+				t_fix_content,
+			</if>
+		</trim>
+		<trim prefix="values (" suffix=")" suffixOverrides=",">
+			<if test="logId != null">
+				#{logId,jdbcType=VARCHAR},
+			</if>
+			<if test="presonId != null">
+				#{presonId,jdbcType=VARCHAR},
+			</if>
+			<if test="equipId != null">
+				#{equipId,jdbcType=VARCHAR},
+			</if>
+			<if test="logAddtime != null">
+				#{logAddtime,jdbcType=VARCHAR},
+			</if>
+			<if test="fixContent != null">
+				#{fixContent,jdbcType=VARCHAR},
+			</if>
+		</trim>
+	</insert>
+	<update id="updateByPrimaryKeySelective" parameterType="com.iss.db.entity.EquipLog">
+		update t_equip_log
+		<set>
+			<if test="presonId != null">
+				t_preson_id = #{presonId,jdbcType=VARCHAR},
+			</if>
+			<if test="equipId != null">
+				t_equip_id = #{equipId,jdbcType=VARCHAR},
+			</if>
+			<if test="logAddtime != null">
+				t_log_addTime = #{logAddtime,jdbcType=VARCHAR},
+			</if>
+			<if test="fixContent != null">
+				t_fix_content = #{fixContent,jdbcType=VARCHAR},
+			</if>
+		</set>
+		where t_log_id = #{logId,jdbcType=VARCHAR}
+	</update>
+	<update id="updateByPrimaryKey" parameterType="com.iss.db.entity.EquipLog">
+		update t_equip_log
+		set t_preson_id = #{presonId,jdbcType=VARCHAR},
+		t_equip_id =
+		#{equipId,jdbcType=VARCHAR},
+		t_log_addTime =
+		#{logAddtime,jdbcType=VARCHAR},
+		t_fix_content =
+		#{fixContent,jdbcType=VARCHAR}
+		where t_log_id =
+		#{logId,jdbcType=VARCHAR}
+	</update>
+</mapper>

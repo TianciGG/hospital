@@ -1,0 +1,325 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.iss.db.dao.DeviceDAO">
+	<resultMap id="BaseResultMap" type="com.iss.db.entity.Device">
+		<id column="t_equip_id" jdbcType="VARCHAR" property="equipId" />
+		<result column="t_agency_id" jdbcType="VARCHAR" property="agencyId" />
+		<result column="t_dic_code" jdbcType="VARCHAR" property="dicCode" />
+		<result column="t_device_name" jdbcType="VARCHAR" property="deviceName" />
+		<result column="t_dtype" jdbcType="VARCHAR" property="dtype" />
+		<result column="t_factory" jdbcType="VARCHAR" property="factory" />
+		<result column="t_dnumber" jdbcType="VARCHAR" property="dnumber" />
+		<result column="t_buy_date" jdbcType="VARCHAR" property="buyDate" />
+		<result column="t_check_date" jdbcType="VARCHAR" property="checkDate" />
+		<result column="t_sid" jdbcType="VARCHAR" property="sid" />
+		<result column="t_left_day" jdbcType="VARCHAR" property="leftDay" />
+		<result column="t_check_circle" jdbcType="VARCHAR" property="checkCircle" />
+	</resultMap>
+
+	<resultMap id="ResultWithChartObject" type="com.iss.db.entity.ChartObject">
+		<id column="t_equip_id" property="chartId" jdbcType="VARCHAR" />
+		<result column="t_name" property="ctype" jdbcType="VARCHAR" />
+		<result column="totalnum" property="cnum" jdbcType="VARCHAR" />
+	</resultMap>
+
+	<resultMap id="ResultWithDeviceAtt" type="com.iss.db.entity.DeviceAtt">
+		<id column="t_equip_id" property="equipId" jdbcType="VARCHAR" />
+		<result column="t_factory" property="factory" jdbcType="VARCHAR" />
+		<result column="t_device_name" property="deviceName" jdbcType="VARCHAR" />
+		<result column="t_dnumber" property="dnumber" jdbcType="VARCHAR" />
+		<result column="t_buy_date" property="buyDate" jdbcType="VARCHAR" />
+		<result column="t_check_circle" property="checkCircle"
+			jdbcType="VARCHAR" />
+		<result column="t_attid" property="attid" jdbcType="VARCHAR" />
+		<result column="t_attname" property="attname" jdbcType="VARCHAR" />
+		<result column="t_atturl" property="atturl" jdbcType="VARCHAR" />
+		<result column="t_dic_code" property="keshiCode" jdbcType="VARCHAR" />
+		<result column="t_agency_id" property="supportCode" jdbcType="VARCHAR" />
+	</resultMap>
+	<resultMap id="ResultWithAgencyAtt" type="com.iss.db.entity.AgencyAtt">
+		<result column="t_license" property="license" jdbcType="VARCHAR" />
+		<result column="t_permit_no" property="permitNo" jdbcType="VARCHAR" />
+		<result column="t_agency_name" property="agencyName" jdbcType="VARCHAR" />
+		<result column="t_attname" property="attname" jdbcType="VARCHAR" />
+		<result column="t_atturl" property="atturl" jdbcType="VARCHAR" />
+	</resultMap>
+
+	<sql id="Base_Column_List">
+		t_equip_id, t_agency_id, t_dic_code, t_device_name,
+		t_dtype, t_factory,
+		t_dnumber,
+		t_buy_date, t_check_date, t_sid,
+		t_left_day, t_check_circle
+	</sql>
+	<select id="selectByPrimaryKey" parameterType="java.lang.String"
+		resultMap="BaseResultMap">
+		select
+		<include refid="Base_Column_List" />
+		from t_device
+		where t_equip_id = #{equipId,jdbcType=VARCHAR}
+	</select>
+	<!-- 各科室设备使用情况统计页面,取柱状图的数据 -->
+	<select id="getCharColAlarmNum" resultMap="ResultWithChartObject">
+		select c.t_name,sum(
+		case when
+		(SELECT to_days(
+		date_add(d.t_check_date,interval d.t_check_circle day))
+		-to_days(now()))<![CDATA[<=d.t_dnumber ]]>
+		then 1
+		else 0 end) totalnum
+		from t_device d left join t_dic_code c on
+		d.t_dic_code=c.t_dic_code group
+		by d.t_dic_code
+	</select>
+	<!-- 各科室设备使用情况统计页面,取柱状图的数据 -->
+	<select id="getCharColAlarmNumReady" resultMap="ResultWithChartObject">
+		select c.t_name,sum(
+		case when
+		(SELECT to_days(
+		date_add(d.t_check_date,interval d.t_check_circle day))
+		-to_days(now()))<![CDATA[>d.t_dnumber ]]>
+		then 1
+		else 0 end) totalnum
+		from t_device d left join t_dic_code c on
+		d.t_dic_code=c.t_dic_code group
+		by d.t_dic_code
+	</select>
+	<!-- 各科室设备使用情况统计页面,取饼状图的数据 -->
+	<select id="getChartPieDeviceNum" resultMap="ResultWithChartObject">
+		select
+		d.t_name,count(1) totalnum from t_device e left join t_dic_code d
+		on
+		e.t_dic_code=d.t_dic_code
+		GROUP BY e.t_dic_code
+	</select>
+	<!-- 分页显示查询数据 -->
+	<select id="selectAllDevices" resultMap="BaseResultMap"
+		parameterType="com.iss.db.entity.Device">
+		select d.t_equip_id,c.t_name 't_dic_code',d.t_device_name,
+		d.t_buy_date,d.t_check_date,d.t_check_circle,d.t_agency_id,t_dnumber,
+		(SELECT to_days(date_add(d.t_check_date,interval d.t_check_circle
+		day))-to_days(now())) 't_left_day',
+		case when
+		(SELECT
+		to_days(date_add(d.t_check_date,interval d.t_check_circle
+		day))-to_days(now()))<![CDATA[<=d.t_dnumber ]]>
+		then '-1'
+		else '0'
+		end 't_sid'
+
+		from t_device d left join t_dic_code c
+		on
+		d.t_dic_code=c.t_dic_code
+		<where>
+			<if test="(dicCode != null and dicCode !='' and dicCode !='myall') and (deviceName != null and deviceName !='')">
+				and d.t_dic_code=#{dicCode,jdbcType=VARCHAR} and
+				d.t_device_name like
+				concat(concat('%',#{deviceName}),'%')
+			</if>
+			<if test="dicCode != null and dicCode !='' and dicCode !='myall'">
+				and d.t_dic_code=#{dicCode,jdbcType=VARCHAR}
+			</if>
+			<if test="deviceName != null and deviceName !=''">
+				and d.t_device_name like
+				concat(concat('%',#{deviceName}),'%')
+			</if>
+				and d.t_dtype != 0
+		</where> 
+		order by t_left_day asc
+	</select>
+	<!-- 设备预警管理页面，分页操作项编辑内容按钮取一条数据的值 -->
+	<select id="selectOneDeviceForUpdate" resultMap="ResultWithDeviceAtt"
+		parameterType="java.lang.String">
+		select
+		d.t_equip_id,d.t_dic_code,d.t_agency_id,d.t_factory,d.t_device_name,d.t_buy_date,d.t_check_circle,d.t_dnumber,
+		a.t_attid,a.t_attname,a.t_atturl from
+		t_device d left
+		join
+		t_attenchment
+		a on d.t_equip_id=a.t_id
+		where
+		d.t_equip_id=#{equipId,jdbcType=VARCHAR}
+	</select>
+	<!-- 设备预警管理页面，分页操作项详细情况按钮取一条数据值 -->
+	<select id="getDeviceDetail" resultMap="ResultWithAgencyAtt"
+		parameterType="java.lang.String">
+		select
+		a.t_agency_name,a.t_license,a.t_permit_no,t.t_attname,t.t_atturl from
+		t_device d LEFT JOIN t_agency a
+		on d.t_agency_id=a.t_agency_id
+		LEFT JOIN
+		t_attenchment t on
+		d.t_equip_id=t.t_id
+		where
+		d.t_equip_id=#{equipId,jdbcType=VARCHAR}
+	</select>
+	<!-- 设备预警管理页面,导入Excel按钮打开页面导入按钮相关查询 -->
+	<select id="getDevcieByName" resultMap="BaseResultMap"
+		parameterType="java.lang.String">
+		select
+		<include refid="Base_Column_List" />
+		from t_device
+		where t_device_name = #{dname,jdbcType=VARCHAR}
+	</select>
+
+	<delete id="deleteByPrimaryKey" parameterType="java.lang.String">
+		delete from
+		t_device
+		where t_equip_id = #{equipId,jdbcType=VARCHAR}
+	</delete>
+	<insert id="insert" parameterType="com.iss.db.entity.Device">
+		insert into t_device
+		(t_equip_id, t_agency_id, t_dic_code,
+		t_device_name, t_dtype,
+		t_factory,
+		t_dnumber, t_buy_date, t_check_date,
+		t_sid, t_left_day,
+		t_check_circle
+		)
+		values (#{equipId,jdbcType=VARCHAR},
+		#{agencyId,jdbcType=VARCHAR},
+		#{dicCode,jdbcType=VARCHAR},
+		#{deviceName,jdbcType=VARCHAR}, #{dtype,jdbcType=VARCHAR},
+		#{factory,jdbcType=VARCHAR},
+		#{dnumber,jdbcType=VARCHAR},
+		#{buyDate,jdbcType=VARCHAR},
+		#{checkDate,jdbcType=VARCHAR},
+		#{sid,jdbcType=VARCHAR}, #{leftDay,jdbcType=VARCHAR},
+		#{checkCircle,jdbcType=VARCHAR}
+		)
+	</insert>
+	<insert id="insertSelective" parameterType="com.iss.db.entity.Device">
+		insert into t_device
+		<trim prefix="(" suffix=")" suffixOverrides=",">
+			<if test="equipId != null">
+				t_equip_id,
+			</if>
+			<if test="agencyId != null">
+				t_agency_id,
+			</if>
+			<if test="dicCode != null">
+				t_dic_code,
+			</if>
+			<if test="deviceName != null">
+				t_device_name,
+			</if>
+				t_dtype,
+			<if test="factory != null">
+				t_factory,
+			</if>
+			<if test="dnumber != null">
+				t_dnumber,
+			</if>
+			<if test="buyDate != null">
+				t_buy_date,
+			</if>
+			<if test="checkDate != null">
+				t_check_date,
+			</if>
+			<if test="sid != null">
+				t_sid,
+			</if>
+			<if test="leftDay != null">
+				t_left_day,
+			</if>
+			<if test="checkCircle != null">
+				t_check_circle,
+			</if>
+		</trim>
+		<trim prefix="values (" suffix=")" suffixOverrides=",">
+			<if test="equipId != null">
+				#{equipId,jdbcType=VARCHAR},
+			</if>
+			<if test="agencyId != null">
+				#{agencyId,jdbcType=VARCHAR},
+			</if>
+			<if test="dicCode != null">
+				#{dicCode,jdbcType=VARCHAR},
+			</if>
+			<if test="deviceName != null">
+				#{deviceName,jdbcType=VARCHAR},
+			</if>
+				1,
+			<if test="factory != null">
+				#{factory,jdbcType=VARCHAR},
+			</if>
+			<if test="dnumber != null">
+				#{dnumber,jdbcType=VARCHAR},
+			</if>
+			<if test="buyDate != null">
+				#{buyDate,jdbcType=VARCHAR},
+			</if>
+			<if test="checkDate != null">
+				#{checkDate,jdbcType=VARCHAR},
+			</if>
+			<if test="sid != null">
+				#{sid,jdbcType=VARCHAR},
+			</if>
+			<if test="leftDay != null">
+				#{leftDay,jdbcType=VARCHAR},
+			</if>
+			<if test="checkCircle != null">
+				#{checkCircle,jdbcType=VARCHAR},
+			</if>
+		</trim>
+	</insert>
+	<update id="updateByPrimaryKeySelective" parameterType="com.iss.db.entity.Device">
+		update t_device
+		<set>
+			<if test="agencyId != null">
+				t_agency_id = #{agencyId,jdbcType=VARCHAR},
+			</if>
+			<if test="dicCode != null">
+				t_dic_code = #{dicCode,jdbcType=VARCHAR},
+			</if>
+			<if test="deviceName != null">
+				t_device_name = #{deviceName,jdbcType=VARCHAR},
+			</if>
+			<if test="dtype != null">
+				t_dtype = #{dtype,jdbcType=VARCHAR},
+			</if>
+			<if test="factory != null">
+				t_factory = #{factory,jdbcType=VARCHAR},
+			</if>
+			<if test="dnumber != null">
+				t_dnumber = #{dnumber,jdbcType=VARCHAR},
+			</if>
+			<if test="buyDate != null">
+				t_buy_date = #{buyDate,jdbcType=VARCHAR},
+			</if>
+			<if test="checkDate != null">
+				t_check_date = #{checkDate,jdbcType=VARCHAR},
+			</if>
+			<if test="sid != null">
+				t_sid = #{sid,jdbcType=VARCHAR},
+			</if>
+			<if test="leftDay != null">
+				t_left_day = #{leftDay,jdbcType=VARCHAR},
+			</if>
+			<if test="checkCircle != null">
+				t_check_circle = #{checkCircle,jdbcType=VARCHAR},
+			</if>
+		</set>
+		where t_equip_id = #{equipId,jdbcType=VARCHAR}
+	</update>
+	<update id="updateByPrimaryKey" parameterType="com.iss.db.entity.Device">
+		update t_device
+		set t_agency_id = #{agencyId,jdbcType=VARCHAR},
+		t_dic_code =
+		#{dicCode,jdbcType=VARCHAR},
+		t_device_name =
+		#{deviceName,jdbcType=VARCHAR},
+		t_dtype = #{dtype,jdbcType=VARCHAR},
+		t_factory = #{factory,jdbcType=VARCHAR},
+		t_dnumber =
+		#{dnumber,jdbcType=VARCHAR},
+		t_buy_date = #{buyDate,jdbcType=VARCHAR},
+		t_check_date = #{checkDate,jdbcType=VARCHAR},
+		t_sid =
+		#{sid,jdbcType=VARCHAR},
+		t_left_day = #{leftDay,jdbcType=VARCHAR},
+		t_check_circle = #{checkCircle,jdbcType=VARCHAR}
+		where t_equip_id =
+		#{equipId,jdbcType=VARCHAR}
+	</update>
+</mapper>

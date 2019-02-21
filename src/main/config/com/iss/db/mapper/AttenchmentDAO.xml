@@ -1,0 +1,112 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.iss.db.dao.AttenchmentDAO">
+	<resultMap id="BaseResultMap" type="com.iss.db.entity.Attenchment">
+		<id column="t_attid" jdbcType="VARCHAR" property="attid" />
+		<result column="t_id" jdbcType="VARCHAR" property="id" />
+		<result column="t_attname" jdbcType="VARCHAR" property="attname" />
+		<result column="t_type" jdbcType="VARCHAR" property="type" />
+		<result column="t_atturl" jdbcType="VARCHAR" property="atturl" />
+	</resultMap>
+	<sql id="Base_Column_List">
+		t_attid, t_id, t_attname, t_type, t_atturl
+	</sql>
+	<select id="selectByPrimaryKey" parameterType="java.lang.String"
+		resultMap="BaseResultMap">
+		select
+		<include refid="Base_Column_List" />
+		from t_attenchment
+		where t_attid = #{attid,jdbcType=VARCHAR}
+	</select>
+	<!-- 根据供应商ID查附件列表信息 -->
+	<select id="getAllAttByTid" resultMap="BaseResultMap"
+		parameterType="java.lang.String">
+		select
+		<include refid="Base_Column_List" />
+		from t_attenchment
+		where t_id = #{agencyId,jdbcType=VARCHAR}
+	</select>
+
+
+	<delete id="deleteByPrimaryKey" parameterType="java.lang.String">
+		delete from
+		t_attenchment
+		where t_attid = #{attid,jdbcType=VARCHAR}
+	</delete>
+	<insert id="insert" parameterType="com.iss.db.entity.Attenchment">
+		insert into t_attenchment
+		(t_attid, t_id, t_attname,
+		t_type, t_atturl)
+		values
+		(#{attid,jdbcType=VARCHAR}, #{id,jdbcType=VARCHAR},
+		#{attname,jdbcType=VARCHAR},
+		#{type,jdbcType=VARCHAR},
+		#{atturl,jdbcType=VARCHAR})
+	</insert>
+	<insert id="insertSelective" parameterType="com.iss.db.entity.Attenchment">
+		insert into t_attenchment
+		<trim prefix="(" suffix=")" suffixOverrides=",">
+			<if test="attid != null">
+				t_attid,
+			</if>
+			<if test="id != null">
+				t_id,
+			</if>
+			<if test="attname != null">
+				t_attname,
+			</if>
+			<if test="type != null">
+				t_type,
+			</if>
+			<if test="atturl != null">
+				t_atturl,
+			</if>
+		</trim>
+		<trim prefix="values (" suffix=")" suffixOverrides=",">
+			<if test="attid != null">
+				#{attid,jdbcType=VARCHAR},
+			</if>
+			<if test="id != null">
+				#{id,jdbcType=VARCHAR},
+			</if>
+			<if test="attname != null">
+				#{attname,jdbcType=VARCHAR},
+			</if>
+			<if test="type != null">
+				#{type,jdbcType=VARCHAR},
+			</if>
+			<if test="atturl != null">
+				#{atturl,jdbcType=VARCHAR},
+			</if>
+		</trim>
+	</insert>
+	<update id="updateByPrimaryKeySelective" parameterType="com.iss.db.entity.Attenchment">
+		update t_attenchment
+		<set>
+			<if test="id != null">
+				t_id = #{id,jdbcType=VARCHAR},
+			</if>
+			<if test="attname != null">
+				t_attname = #{attname,jdbcType=VARCHAR},
+			</if>
+			<if test="type != null">
+				t_type = #{type,jdbcType=VARCHAR},
+			</if>
+			<if test="atturl != null">
+				t_atturl = #{atturl,jdbcType=VARCHAR},
+			</if>
+		</set>
+		where t_attid = #{attid,jdbcType=VARCHAR}
+	</update>
+	<update id="updateByPrimaryKey" parameterType="com.iss.db.entity.Attenchment">
+		update
+		t_attenchment
+		set t_id = #{id,jdbcType=VARCHAR},
+		t_attname =
+		#{attname,jdbcType=VARCHAR},
+		t_type = #{type,jdbcType=VARCHAR},
+		t_atturl = #{atturl,jdbcType=VARCHAR}
+		where t_attid =
+		#{attid,jdbcType=VARCHAR}
+	</update>
+</mapper>

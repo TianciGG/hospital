@@ -1,0 +1,145 @@
+@CHARSET "UTF-8";
+/*顶部*/
+* {
+	font-size: 15px;
+	border: 0;
+	margin: 0;
+	padding: 0;
+}
+
+body {
+	background-image: url(../images/3.png);
+	overflow: hidden;
+	margin: 0;
+	padding: 0;
+}
+
+.top {
+	height: 47px;
+	position: absolute;
+	top: 0;
+	background: url(../images/loginbg1.png) repeat-x;
+	z-index: 100;
+	width: 100%;
+}
+
+.top span {
+	color: #fff;
+	line-height: 47px;
+	background: url(../images/loginsj.png) no-repeat 21px 18px;
+	text-indent: 44px;
+	float: left;
+}
+
+.top ul {
+	float: right;
+	padding-right: 30px;
+}
+
+.top ul li {
+	float: left;
+	margin-left: 20px;
+	line-height: 47px;
+}
+
+li {
+	display: block;
+	margin: 0;
+	padding: 0;
+	list-style: none;
+}
+
+.top ul li a {
+	color: #afc5d2;
+}
+
+.top ul li a:hover {
+	color: #fff;
+}
+/*中间部分*/
+.login {
+	margin: 5.5% 34%;
+	width: 35%;
+	position: fixed;
+}
+
+.login-top {
+	background: #E1E1E1;
+	/* 顶部变圆角*/
+	border-radius: 25px 25px 0px 0px;
+	padding: 25px 70px;
+}
+
+.login-top h1 {
+	text-align: center;
+	font-size: 27px;
+	font-weight: 500;
+	color: #ff0000;
+	margin: 0px 0px 20px 0px;
+}
+
+.login-top input[type="text"] {
+	outline: none;
+	font-size: 15px;
+	font-weight: 500;
+	height: 40px;
+	color: #818181;
+	padding: 15px 20px;
+	background: #CACACA;
+	border: 1px solid #ccc;
+	border-radius: 25px;
+	margin: 0px 0px 0px 0px;
+	width: 100%;
+}
+
+.login-top input[type="password"] {
+	outline: none;
+	font-size: 15px;
+	font-weight: 500;
+	height: 40px;
+	color: #818181;
+	padding: 15px 20px;
+	background: #CACACA;
+	border: 1px solid #ccc;
+	border-radius: 20px;
+	margin: 0px 0px 2px 0px;
+	width: 100%;
+}
+
+.login-bottom {
+	background: gray;
+	padding: 15px 65px;
+	border-radius: 0px 0px 25px 25px;
+	text-align: right;
+	border-top: 2px solid #AD4337;
+}
+
+.login-bottom h3 {
+	font-size: 14px;
+	color: #fff;
+}
+
+.login-bottom h3 a {
+	font-size: 25px;
+	font-weight: 500;
+	color: #fff;
+	text-decoration: none;
+}
+
+.login-bottom h3 a:hover {
+	color: #696969;
+	transition: 0.5s all;
+}
+
+/*底部*/
+.bottom {
+	height: 50px;
+	line-height: 50px;
+	/*文本居中*/
+	text-align: center;
+	background: url(../images/loginbg2.png) repeat-x;
+	position: absolute;
+	bottom: 0;
+	width: 100%;
+	color: #0b3a58;
+}

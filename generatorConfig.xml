@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE generatorConfiguration PUBLIC "-//mybatis.org//DTD MyBatis Generator Configuration 1.0//EN" "http://mybatis.org/dtd/mybatis-generator-config_1_0.dtd">
+<generatorConfiguration>
+	<context id="context1">
+		<commentGenerator>
+			<property name="suppressAllComments" value="true" />
+		</commentGenerator>
+		<jdbcConnection connectionURL="jdbc:mysql://127.0.0.1:3306/tjhospital"
+			driverClass="com.mysql.jdbc.Driver" password="666666" userId="txiaozu" />
+		<javaModelGenerator targetPackage="com.iss.db.entity"
+			targetProject="hospital/src/main/java">
+			<property name="trimStrings" value="true" />
+		</javaModelGenerator>
+		<sqlMapGenerator targetPackage="com.iss.db.mapper"
+			targetProject="hospital/src/main/config" />
+		<javaClientGenerator targetPackage="com.iss.db.dao"
+			targetProject="hospital/src/main/java" type="XMLMAPPER" />
+
+
+
+		<table schema="tjhospital" tableName="t_agency" mapperName="AgencyDAO"
+			domainObjectName="Angency" enableCountByExample="false"
+			enableSelectByExample="false" enableDeleteByExample="false"
+			enableUpdateByExample="false">
+			<columnRenamingRule searchString="^t_"
+				replaceString="" />
+		</table>
+
+		<table schema="tjhospital" tableName="t_attenchment" mapperName="AttenchmentDAO"
+			domainObjectName="Attenchment" enableCountByExample="false"
+			enableSelectByExample="false" enableDeleteByExample="false"
+			enableUpdateByExample="false">
+			<columnRenamingRule searchString="^t_"
+				replaceString="" />
+		</table>
+
+		<table schema="tjhospital" tableName="t_device" mapperName="DeciveDAO"
+			domainObjectName="Decive" enableCountByExample="false"
+			enableSelectByExample="false" enableDeleteByExample="false"
+			enableUpdateByExample="false">
+			<columnRenamingRule searchString="^t_"
+				replaceString="" />
+		</table>
+
+		<table schema="tjhospital" tableName="t_dic_code" mapperName="DicCodeDAO"
+			domainObjectName="DicCode" enableCountByExample="false"
+			enableSelectByExample="false" enableDeleteByExample="false"
+			enableUpdateByExample="false">
+			<columnRenamingRule searchString="^t_"
+				replaceString="" />
+		</table>
+
+		<table schema="tjhospital" tableName="t_equip_log" mapperName="EquipLogDAO"
+			domainObjectName="EquipLog" enableCountByExample="false"
+			enableSelectByExample="false" enableDeleteByExample="false"
+			enableUpdateByExample="false">
+			<columnRenamingRule searchString="^t_"
+				replaceString="" />
+		</table>
+
+		<table schema="tjhospital" tableName="t_person" mapperName="PersonDAO"
+			domainObjectName="Person" enableCountByExample="false"
+			enableSelectByExample="false" enableDeleteByExample="false"
+			enableUpdateByExample="false">
+			<columnRenamingRule searchString="^t_"
+				replaceString="" />
+		</table>
+
+		<table schema="tjhospital" tableName="t_sys_user" mapperName="SysUserDAO"
+			domainObjectName="SysUser" enableCountByExample="false"
+			enableSelectByExample="false" enableDeleteByExample="false"
+			enableUpdateByExample="false">
+			<columnRenamingRule searchString="^t_"
+				replaceString="" />
+		</table>
+
+	</context>
+</generatorConfiguration>
